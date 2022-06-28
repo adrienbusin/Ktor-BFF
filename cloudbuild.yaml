@@ -1,7 +1,9 @@
 steps:
   # running docker-compose
   - name: 'docker/compose:1.26.2'
-    args: [ 'up', '-d' ]
+    args: [ '-p', 'ktor-bff', 'up', '-d']
   # Build the container image
-  - name: 'docker/compose:1.26.2'
-    args: [ 'push' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'tag', 'ktor-bff_bff:latest', 'gcr.io/$PROJECT_ID/bff-ktor:$COMMIT_SHA' ]
+images:
+  - 'gcr.io/$PROJECT_ID/bff-ktor:$COMMIT_SHA'
