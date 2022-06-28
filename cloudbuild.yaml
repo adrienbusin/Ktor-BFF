@@ -1,4 +1,23 @@
 steps:
   # running docker-compose
   - name: 'docker/compose:1.26.2'
-    args: ['up', '-d']
+    args: [ 'up', '-d' ]
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'bff-ktor_bff', 'gcr.io/$PROJECT_ID/bff-ktor:$COMMIT_SHA']
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/bff-ktor:$COMMIT_SHA']
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'bff-ktor'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/bff-ktor:$COMMIT_SHA'
+      - '--region'
+      - 'europe-west1'
+images:
+  - 'gcr.io/$PROJECT_ID/bff-ktor:$COMMIT_SHA'
