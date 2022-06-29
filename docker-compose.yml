@@ -7,10 +7,10 @@ services:
     ports:
       - "8080:8080"
     links:
-      - mongodb
+      - mongo
     depends_on:
-      - mongodb
-  mongodb:
-    image: mongo:latest
+      - mongo
+  mongo:
+    image: marketplace.gcr.io/google/mongodb4
     ports:
-      - "27017:27017"
+      - '27017:27017'
